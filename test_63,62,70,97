@@ -1,4 +1,3 @@
-package wfr_test;
 
 class Solution {
     public int uniquePaths(int m, int n) {
