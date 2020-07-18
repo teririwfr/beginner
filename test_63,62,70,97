@@ -1,0 +1,145 @@
+class Solution {
+    public int uniquePaths(int m, int n) {
+    	int[][] dp=new int[m][n];
+    	for(int i=0;i<m;i++) {dp[i][0]=1;}
+    	for(int j=0;j<n;j++) {dp[0][j]=1;}
+    	for(int i=1;i<m;i++) {
+    		for(int j=1;j<n;j++) {
+    				dp[i][j]=dp[i-1][j]+dp[i][j-1];
+    		}
+    	}
+		return dp[m-1][n-1];
+    }
+	 public int uniquePathsWithObstacles(int[][] obstacleGrid) {
+	    	if(obstacleGrid==null||obstacleGrid.length==0) {return 0;}
+	    	int row=obstacleGrid.length;
+	    	int high=obstacleGrid[0].length;
+	    	int[][] dp=new int[row][high];
+//	    	System.out.println(row+" "+high);
+	    	for(int i=0;i<row&&obstacleGrid[i][0]==0;i++) {dp[i][0]=1;}
+	    	for(int j=0;j<high&&obstacleGrid[0][j]==0;j++) {dp[0][j]=1;}
+	    	for(int i=1;i<row;i++) {
+	    		for(int j=1;j<high;j++) {
+	    			if(obstacleGrid[i][j]==0) {
+	    				dp[i][j]=dp[i-1][j]+dp[i][j-1];
+	    			}
+	    		}
+	    	}
+			return dp[row-1][high-1];
+	        
+	    }
+	public int climbStairs(int n) {
+    	if(n==1)return 1;
+    	int[] dp=new int[n+1];
+		dp[1]=1;
+		dp[2]=2;
+    	for(int i=3;i<=n;i++) {
+    		dp[i]=dp[i-1]+dp[i-2];
+    	}
+		return dp[n];
+    }
+    public boolean isInterleave(String s1, String s2, String s3) {
+        /*
+        dp[i][j] 表示 s1 的前 i 个字符 和 s2 的前 j 个字符是否能构成 s3 的前 i + j 个字符
+        当 s3 最后一个字符跟 s1[i] 匹配，dp[i][j] = dp[i - 1][j]
+        当 s3 最后一个字符是 s2[j] 匹配，dp[i][j] = dp[i][j - 1]
+        */
+        int len1 = s1.length();
+        int len2 = s2.length();
+        int len3 = s3.length();
+        if(len1 + len2 != len3){
+            return false;
+        }
+        boolean[][] dp = new boolean[len1 + 1][len2 + 1];
+        dp[0][0] = true;
+        //处理 s2 为空的情况
+        for(int i = 0; i < len1; i++){
+            dp[i + 1][0] = s1.charAt(i) == s3.charAt(i) && dp[i][0];
+//            System.out.println("s2为空	"+dp[i + 1][0]+" "+s1.charAt(i)+" "+s3.charAt(i)+" "+dp[i][0]);
+        }
+        //处理 s1 为空的情况
+        for(int i = 0; i < len2; i++){
+            dp[0][i + 1] = s2.charAt(i) == s3.charAt(i) && dp[0][i];    
+//            System.out.println("s1为空	"+dp[0][i + 1]+" "+s2.charAt(i)+" "+s3.charAt(i)+" "+dp[0][i]);
+        }
+        for(int i = 0; i < len1; i++){
+            for(int j = 0; j < len2; j++){
+                char ch = s3.charAt(i + j + 1);
+//                System.out.print(ch+" ");
+                dp[i + 1][j + 1] = s1.charAt(i) == ch && dp[i][j + 1] || s2.charAt(j) == ch && dp[i + 1][j];
+//                System.out.print(dp[i + 1][j + 1]+" "+s1.charAt(i)+" "+ch+" "+ dp[i][j + 1]+" "+s2.charAt(j)+" "+ch +" "+ dp[i + 1][j]+"    ");
+            }
+//            System.out.println();
+        }
+//        for(int i = 0; i <= len1; i++){
+//            for(int j = 0; j <=len2; j++){
+//            System.out.print(dp[i][j]+"	");
+//            }
+//            System.out.println();
+//        }
+//        System.out.println("aabcc"+" "+"dbbca"+" "+"aadbbcbcac");
+        return dp[len1][len2];
+    }
+}
+/*
+------------------------------------------------------
+一个机器人位于一个 m x n 网格的左上角 （起始点在下图中标记为“Start” ）。
+机器人每次只能向下或者向右移动一步。机器人试图达到网格的右下角（在下图中标记为“Finish”）。
+问总共有多少条不同的路径？
+例如，上图是一个7 x 3 的网格。有多少可能的路径？
+示例 1:
+输入: m = 3, n = 2
+输出: 3
+解释:
+从左上角开始，总共有 3 条路径可以到达右下角。
+1. 向右 -> 向右 -> 向下
+2. 向右 -> 向下 -> 向右
+3. 向下 -> 向右 -> 向右
+示例 2:
+输入: m = 7, n = 3
+输出: 28
+
+--------------------------------------------------
+一个机器人位于一个 m x n 网格的左上角 （起始点在下图中标记为“Start” ）。
+机器人每次只能向下或者向右移动一步。机器人试图达到网格的右下角（在下图中标记为“Finish”）。
+现在考虑网格中有障碍物。那么从左上角到右下角将会有多少条不同的路径？
+网格中的障碍物和空位置分别用 1 和 0 来表示。
+说明：m 和 n 的值均不超过 100。
+示例 1:
+输入:
+[
+  [0,0,0],
+  [0,1,0],
+  [0,0,0]
+]
+输出: 2
+解释:
+3x3 网格的正中间有一个障碍物。
+从左上角到右下角一共有 2 条不同的路径：
+1. 向右 -> 向右 -> 向下 -> 向下
+2. 向下 -> 向下 -> 向右 -> 向右
+
+---------------------------------------------------
+假设你正在爬楼梯。需要 n 阶你才能到达楼顶。
+每次你可以爬 1 或 2 个台阶。你有多少种不同的方法可以爬到楼顶呢？
+注意：给定 n 是一个正整数。
+示例 1：
+输入： 2
+输出： 2
+解释： 有两种方法可以爬到楼顶。
+1.  1 阶 + 1 阶
+2.  2 阶
+
+----------------------------------------------------
+给定三个字符串 s1, s2, s3, 验证 s3 是否是由 s1 和 s2 交错组成的。
+
+示例 1:
+
+输入: s1 = "aabcc", s2 = "dbbca", s3 = "aadbbcbcac"
+输出: true
+-------------------------------------------------
+来源：力扣（LeetCode）
+链接：https://leetcode-cn.com/problems/burst-balloons
+著作权归领扣网络所有。商业转载请联系官方授权，非商业转载请注明出处。
+---------------------------------------------------
+*/
